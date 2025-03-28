@@ -1,0 +1,105 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h3>Главное меню</h3>
+
+<div>
+    <input @bind="SearchQuery" placeholder="Поиск..." />
+    <button @onclick="SearchBooks">Поиск</button>
+</div>
+
+<div>
+    <button @onclick="ShowAllBooks">Показать всё</button>
+    <button @onclick="ToggleCategories">Поиск по категориям</button>
+    <button>Популярное</button>
+    <button @onclick="OpenModal">Справка и помощь</button>
+</div>
+
+@if (ShowCategories)
+{
+    <h4>Поиск по категориям</h4>
+    <div>
+        @foreach (var category in Categories)
+        {
+            <button @onclick="() => SearchByCategory(category)">@category</button>
+        }
+    </div>
+}
+
+@if (ShowBooks)
+{
+    <h4>Список книг</h4>
+    <ul>
+        @foreach (var book in FilteredBooks)
+        {
+            <li @onclick="() => SelectBook(book)">@book</li>
+        }
+    </ul>
+}
+
+@if (SelectedBook != null)
+{
+    <h4>@SelectedBook</h4>
+    <p>Описание книги...</p>
+}
+
+<!-- Подключаем модальное окно -->
+ <!--<Modal IsOpen="IsModalOpen" OnClose="CloseModal">-->
+<Modal @bind-IsOpen="IsModalOpen">
+    <h2>Справка и помощь</h2>
+    <p>Здесь представлена информация о поиске книг и категориях.</p>
+</Modal> 
+
+@code {
+    private string SearchQuery = "";
+    private bool ShowCategories = false;
+    private bool ShowBooks = false;
+    private bool IsModalOpen = false;
+    private string? SelectedBook;
+
+    private List<string> Books = new() { "Стихи и пуля", "Тёмный дуб", "Тюрьма и хлеб", "Одинокий волк" };
+    private List<string> FilteredBooks = new();
+    private List<string> Categories = new() { "IT-технологии", "Фэнтези", "История", "Медицина" };
+
+    private void SearchBooks()
+    {
+        FilteredBooks = Books.FindAll(b => b.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+        ShowBooks = true;
+    }
+
+    private void ShowAllBooks()
+    {
+        FilteredBooks = new List<string>(Books);
+        ShowBooks = true;
+    }
+
+    private void ToggleCategories()
+    {
+        ShowCategories = !ShowCategories;
+    }
+
+    private void OpenModal()
+    {
+        Console.WriteLine("Открытие модального окна"); // Отладочное сообщение
+        IsModalOpen = true;
+        StateHasChanged(); // Принудительное обновление интерфейса
+    }
+
+    private void CloseModal()
+    {
+        IsModalOpen = false;
+    }
+
+    private void SelectBook(string book)
+    {
+        SelectedBook = book;
+    }
+
+    private void SearchByCategory(string category)
+    {
+        SelectedBook = $"Результаты по категории: {category}";
+        ShowBooks = false;
+    }
+}
+

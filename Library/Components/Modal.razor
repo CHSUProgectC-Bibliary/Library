@@ -1,15 +1,4 @@
-﻿<!--<h3>Modal</h3>-->
-
-
-
-@* <div class="modal-backdrop" @onclick="HandleBackdropClick" style="@(IsOpen ? "display: block;" : "display: none;")">
-    <div class="modal-content">
-        <button class="close-button" @onclick="OnClose">×</button>
-        @ChildContent
-    </div>
-</div> *@
-
-@if (IsOpen)
+﻿@if (IsOpen)
 {
     <div class="modal-backdrop" @onclick="HandleBackdropClick">
         <div class="modal-content" @onclick:stopPropagation>
@@ -20,15 +9,7 @@
 }
 
 @code {
-    // [Parameter] public bool IsOpen { get; set; }
-    // [Parameter] public EventCallback OnClose { get; set; }
-    // [Parameter] public RenderFragment? ChildContent { get; set; }
-
-    // private void HandleBackdropClick()
-    // {
-    //     OnClose.InvokeAsync();
-    // }
-
+   
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }

@@ -82,7 +82,10 @@
 }
 
 .nav-scrollable {
-    display: none;
+    /*display: none;*/
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .navbar-toggler:checked ~ .nav-scrollable {

@@ -1,6 +1,141 @@
 ﻿@page "/showall"
 @rendermode InteractiveServer
+@using System.Globalization
 
-<PageTitle>Показать все</PageTitle>
+<PageTitle>Все книги</PageTitle>
 
-<h1>Показать все</h1>
+<h1 class="text-center mb-4">Все книги библиотеки</h1>
+
+@if (Books.Count == 0)
+{
+    <p>Загрузка списка книг...</p>
+}
+else
+{
+    <div class="book-grid">
+        @foreach (var book in Books)
+        {
+            <div class="book-card">
+                <img src="@book.ImageUrl" alt="@book.Title" class="book-image" />
+                <div class="book-info">
+                    <h5>@book.Title</h5>
+                    <p><strong>Автор:</strong> @book.Author</p>
+                    <p class="desc">@book.Description.Substring(0, Math.Min(100, book.Description.Length))...</p>
+                    <button class="details-button" @onclick="() => ShowDetails(book)">Подробнее</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (SelectedBook != null)
+{
+    <Modal @bind-IsOpen="IsModalOpen">
+        <h2>@SelectedBook.Title</h2>
+        <p><strong>Автор:</strong> @SelectedBook.Author</p>
+        <p><strong>Описание:</strong> @SelectedBook.Description</p>
+        <button @onclick="CloseModal" class="close-button">Закрыть</button>
+    </Modal>
+}
+
+@code {
+    private List<Book> Books = new();
+    private Book? SelectedBook;
+    private bool IsModalOpen = false;
+
+    protected override void OnInitialized()
+    {
+        Books = GetAllBooks();
+    }
+
+    private void ShowDetails(Book book)
+    {
+        SelectedBook = book;
+        IsModalOpen = true;
+    }
+
+    private void CloseModal()
+    {
+        IsModalOpen = false;
+        SelectedBook = null;
+    }
+
+    private List<Book> GetAllBooks() => new()
+    {
+        new Book
+        {
+            Title = "Стихи и пуля",
+            Author = "А. Пушкин",
+            Description = "Сборник, сочетающий романтику, философию и борьбу...",
+            ImageUrl = "/images/book1.jpg"
+        },
+        new Book
+        {
+            Title = "Тёмный дуб",
+            Author = "Л. Толстой",
+            Description = "История взросления, силы духа и природы человека...",
+            ImageUrl = "/images/book2.jpg"
+        },
+        new Book
+        {
+            Title = "Одинокий волк",
+            Author = "Д. Лондон",
+            Description = "Эпическая повесть о выживании, воле и одиночестве...",
+            ImageUrl = "/images/book3.jpg"
+        }
+    };
+
+    public class Book
+    {
+        public string Title { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+    }
+}
+
+<style>
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .book-card {
+        background-color: #fefae0;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .book-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .book-info {
+        margin-top: 0.5rem;
+    }
+
+    .desc {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .details-button {
+        padding: 0.5rem 1rem;
+        background-color: #370617;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+
+
+</style>

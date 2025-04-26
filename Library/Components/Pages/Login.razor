@@ -21,7 +21,7 @@
     </div>
 
 </div>
-
+@inject ILogging Log 
 @code {
     private string Email = "";
     private string Password = "";
@@ -33,6 +33,7 @@
             Console.WriteLine("Заполните все поля.");
             return;
         }
-        Console.WriteLine($"Email: {Email}, Password: {Password}");
+        Log.LogInfotmation($"Email: {Email}, Password: {Password}")
+        Console.WriteLine($"Email: {Email}, Password: {Password}"); //WriteLine не использовать, нужно использовать LogLevel (ILogging<?)
     }
 }
